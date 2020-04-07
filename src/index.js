@@ -1,41 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {FormattedNumber,IntlProvider} from 'react-intl';
+import {IntlProvider} from 'react-intl';
 
+import {ValorDescrito} from './valor';
+import {ExtratoComp} from './extrato';
 
 import './index.css';
 
-class Valor extends Number{
-  constructor(centavos){
-    super(centavos/100);
-    this.rawValue = centavos;
-  }
-}
-
-class ValorDescrito extends React.Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      desc: props.desc,
-      valor: props.valor
-    };
-  }
-
-  render(){
-    return (
-      <div>
-        <span>{this.state.desc}</span> 
-        <span>
-          <FormattedNumber value={this.state.valor} style="currency" currency="BRL"/> 
-        </span>
-      </div>
-    )
-  }
-}
 
 class ValoresDoDia extends React.Component{
   constructor(props){
     super(props);
+    console.log("Criando ValoresDoDia");
 
     this.state={
       dia: props.dia,
@@ -43,8 +19,14 @@ class ValoresDoDia extends React.Component{
     };
   }
 
+  componentDidMount(){
+    console.log("ValoresDoDia did mount")
+  }
+
   render(){
-    const {dia,lancamentos} = this.state;
+    const {dia,lancamentos} = this.props;
+
+    console.log("Renderizando ValoresDoDia (" + lancamentos.length + " elementos)");
 
     return (
       <div>
@@ -56,8 +38,6 @@ class ValoresDoDia extends React.Component{
       </div>
     );
   }
-
-
 }
 
 
@@ -66,16 +46,47 @@ class Planinha extends React.Component{
   constructor(props){
     super(props);
     this.state= {
-      dia: '2020-03-01',
-      lancamentos: [
-        {desc:'Almoço',valor:new Valor(1234)},
-        {desc:'Ônibus',valor:new Valor(420)},
-      ]
+      error: null,
+      isLoaded: false,
+      dia: null,
+      lancamentos: [],
     }
   }
 
+  componentDidMount(){
+    fetch('http://localhost:8080/planinha/operacoes?mes=2015-04')
+        .then(res => res.json())
+        .then(
+            (operacoes) => {
+              var diasValores = 
+                operacoes.map(
+                  operacao => {
+                    return {
+                      dia: operacao.fato.dia,
+                      valor: operacao.movimentacoes.map(m => m.valor).reduce((subt,v)=>subt+v)
+                    }
+                  }
+                ) ;
+              console.log(diasValores);
+   
+              this.setState({
+                  lancamentos: diasValores,
+                  isLoaded: true
+              });
+            },
+            (error) => {
+                this.setState({
+                    isLoaded: true,
+                    error: error
+                });
+            }
+        );
+  }
+
+
   render(){
     const {dia, lancamentos} = this.state;
+    console.log("Rendering " + lancamentos.length + " elements.")
     return (
       <IntlProvider locale="pt">
         <ValoresDoDia dia={dia} lancamentos={lancamentos}/>
@@ -84,9 +95,10 @@ class Planinha extends React.Component{
   }
 }
 
+
 ReactDOM.render(
   <IntlProvider locale="pt">
-    <Planinha/>
+    <ExtratoComp conta="2" id="2015-03-01-31" />
   </IntlProvider>,
   document.getElementById('root')
 );

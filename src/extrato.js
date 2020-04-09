@@ -14,8 +14,13 @@ class ItemsExtrato extends React.Component {
     render(){
         return this.props.items.map(
             (item => (
-                <div className="planinha-itemExtrato row">
-                    <div className="col-12"><h2 className="text-secondary">{item.dia}</h2></div>
+                <div className="planinha-itemExtrato row"> 
+                    <div className="col-12">
+                        <h2 className="text-secondary ">
+                            <span class="oi oi-calendar"/>
+                            {item.dia}
+                        </h2>
+                    </div>
                     <div className="col-12">
                         <ItemsDia items={item.valoresDoDia}/>
                     </div>

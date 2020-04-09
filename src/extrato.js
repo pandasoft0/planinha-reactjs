@@ -14,9 +14,11 @@ class ItemsExtrato extends React.Component {
     render(){
         return this.props.items.map(
             (item => (
-                <div className="planinha-itemExtrato">
-                    <div>{item.dia}</div>
-                    <ItemsDia items={item.valoresDoDia}/>
+                <div className="planinha-itemExtrato row">
+                    <div className="col-12"><h2 className="text-secondary">{item.dia}</h2></div>
+                    <div className="col-12">
+                        <ItemsDia items={item.valoresDoDia}/>
+                    </div>
                 </div>
             )
         )); 

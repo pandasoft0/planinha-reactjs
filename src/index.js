@@ -97,8 +97,10 @@ class Planinha extends React.Component{
 
 
 ReactDOM.render(
+  <div className="container-sm">
   <IntlProvider locale="pt">
     <ExtratoComp conta="2" id="2015-03-01-31" />
-  </IntlProvider>,
+  </IntlProvider>
+  </div>,
   document.getElementById('root')
 );

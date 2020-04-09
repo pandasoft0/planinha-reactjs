@@ -5,11 +5,11 @@ class ValorDescrito extends React.Component{
 
     render(){
         return (
-        <div className="planinha-valorDescrito">
-            <span>{this.props.desc}</span> 
-            <span>
+        <div className="planinha-valorDescrito row">
+            <div className="col-9">{this.props.desc}</div> 
+            <div className="col-3">
                 <Centavos value={this.props.valor} style="currency" currency="BRL"/>    
-            </span>
+            </div>
         </div>
         )
     }
